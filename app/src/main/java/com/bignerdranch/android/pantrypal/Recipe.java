@@ -80,22 +80,24 @@ public class Recipe {
     }
 
     private Recipe(UUID id, String title, List<String> ingredients, List<String> instructions, boolean isFav, double timeToMake, int difficulty){
-        this.mId = id;
-        this.mTitle = title;
-        this.mIngredients = ingredients;
-        this.mDifficulty = difficulty;
-        this.mInstructions = instructions;
-        this.mIsFavorite = isFav;
-        this.mTimetoMake = timeToMake;
+        this(
+                UUID.randomUUID(),
+                "title",
+                List.of("Ingredient 1", "Ingredient 2"),
+                false,
+                30,
+                List.of("Step 1", "Step 2"),
+                3
+        );
     }
 
-    private Recipe (UUID a, String b, List<String> c, boolean d, double e, List<String> f,int g){
-        mId = a;
-        mTitle = b;
-        mIngredients =c;
-        mIsFavorite = d;
-        mTimetoMake = e;
-        mInstructions = f;
-        mDifficulty = g;
+    private Recipe (UUID id, String title, List<String> ingredients, boolean isFavorite, double timeToMake, List<String> steps,int difficulty){
+        mId = id;
+        mTitle = title;
+        mIngredients = ingredients;
+        mIsFavorite = isFavorite;
+        mTimetoMake = timeToMake;
+        mInstructions = steps;
+        mDifficulty = difficulty;
     }
 }
