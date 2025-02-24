@@ -88,4 +88,14 @@ public class Recipe {
         this.mIsFavorite = isFav;
         this.mTimetoMake = timeToMake;
     }
+
+    private Recipe (UUID a, String b, List<String> c, boolean d, double e, List<String> f,int g){
+        mId = a;
+        mTitle = b;
+        mIngredients =c;
+        mIsFavorite = d;
+        mTimetoMake = e;
+        mInstructions = f;
+        mDifficulty = g;
+    }
 }
