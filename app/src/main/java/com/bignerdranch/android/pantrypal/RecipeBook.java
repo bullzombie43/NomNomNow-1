@@ -15,6 +15,7 @@ public class RecipeBook {
         if (sRecipeBook == null) {
             sRecipeBook = new RecipeBook(context);
         }
+
         return sRecipeBook;
     }
     private RecipeBook(Context context) {
