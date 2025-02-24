@@ -69,6 +69,23 @@ public class Recipe {
     }
 
     public Recipe (){
-        mId = UUID.randomUUID();
+        this(
+                UUID.randomUUID(),
+                "basic",
+                List.of("Ingredient 1", "Ingredient 2"),
+                List.of("Step 1", "Step 2"),
+                false,
+                30.0,
+                1);
+    }
+
+    private Recipe(UUID id, String title, List<String> ingredients, List<String> instructions, boolean isFav, double timeToMake, int difficulty){
+        this.mId = id;
+        this.mTitle = title;
+        this.mIngredients = ingredients;
+        this.mDifficulty = difficulty;
+        this.mInstructions = instructions;
+        this.mIsFavorite = isFav;
+        this.mTimetoMake = timeToMake;
     }
 }
