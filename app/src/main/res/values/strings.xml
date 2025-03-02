@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PantryPal</string>
+     <string name="recipe_title_label">Title</string>
+    <string name="recipe_ingredients_label">Ingredients</string>
+    <string name="recipe_favorite_label">Favorite</string>
+    <string name="recipe_timetomake_label">Time To Make</string>
+    <string name="recipe_instructions_label">Instructions</string>
+    <string name="recipe_difficulty_label">Difficulty</string>
+
 </resources>

@@ -10,7 +10,8 @@ public class Recipe {
     private boolean mIsFavorite;
     private double mTimetoMake;
     private List<String> mInstructions;
-    private int mDifficulty;
+    private double mDifficulty;
+    private boolean mChanged;
 
     public UUID getId() {
         return mId;
@@ -26,6 +27,7 @@ public class Recipe {
 
     public void setTitle(String title) {
         mTitle = title;
+        mChanged = true;
     }
 
     public List<String> getIngredients() {
@@ -34,6 +36,7 @@ public class Recipe {
 
     public void setIngredients(List<String> ingredients) {
         mIngredients = ingredients;
+        mChanged = true;
     }
 
     public boolean isFavorite() {
@@ -42,6 +45,7 @@ public class Recipe {
 
     public void setFavorite(boolean favorite) {
         mIsFavorite = favorite;
+        mChanged = true;
     }
 
     public double getTimetoMake() {
@@ -50,6 +54,7 @@ public class Recipe {
 
     public void setTimetoMake(double timetoMake) {
         mTimetoMake = timetoMake;
+        mChanged = true;
     }
 
     public List<String> getInstructions() {
@@ -58,14 +63,16 @@ public class Recipe {
 
     public void setInstructions(List<String> instructions) {
         mInstructions = instructions;
+        mChanged = true;
     }
 
-    public int getDifficulty() {
+    public double getDifficulty() {
         return mDifficulty;
     }
 
-    public void setDifficulty(int difficulty) {
+    public void setDifficulty(double difficulty) {
         mDifficulty = difficulty;
+        mChanged = true;
     }
 
     public Recipe (){
@@ -79,7 +86,15 @@ public class Recipe {
                 1);
     }
 
-    private Recipe(UUID id, String title, List<String> ingredients, List<String> instructions, boolean isFav, double timeToMake, int difficulty){
+    public boolean isChanged() {
+        return mChanged;
+    }
+
+    public void setChanged(boolean changed) {
+        mChanged = changed;
+    }
+
+    private Recipe(UUID id, String title, List<String> ingredients, List<String> instructions, boolean isFav, double timeToMake, double difficulty){
         this(
                 UUID.randomUUID(),
                 "title",
@@ -91,7 +106,7 @@ public class Recipe {
         );
     }
 
-    private Recipe (UUID id, String title, List<String> ingredients, boolean isFavorite, double timeToMake, List<String> steps,int difficulty){
+    private Recipe (UUID id, String title, List<String> ingredients, boolean isFavorite, double timeToMake, List<String> steps,double difficulty){
         mId = id;
         mTitle = title;
         mIngredients = ingredients;
