@@ -6,5 +6,13 @@
     <string name="recipe_timetomake_label">Time To Make</string>
     <string name="recipe_instructions_label">Instructions</string>
     <string name="recipe_difficulty_label">Difficulty</string>
+    <string name="show_subtitle">Show Subtitle</string>
+    <string name="hide_subtitle">Hide Subtitle</string>
+    <string name="subtitle_format">%1$d recipes</string>
+    <string name="there_are_currently_no_recipes">There are currently no recipes.</string>
+    <string name="add_recipe">Add Recipe</string>
+    <string name="new_recipe">New Recipe</string>
+    <string name="delete_recipe">Delete Recipe</string>
+
 
 </resources>

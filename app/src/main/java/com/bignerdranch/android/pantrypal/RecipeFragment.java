@@ -12,8 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
+
+import java.util.UUID;
 
 public class RecipeFragment extends Fragment {
+    private static final String ARG_RECIPE_ID = "recipe_id";
+
     private Recipe mRecipe;
     private CheckBox mFavoritedCheckBox;
     private EditText mTitleField;
@@ -22,10 +27,21 @@ public class RecipeFragment extends Fragment {
     private EditText mInstructionsField;
     private TextView mDifficultyField;
 
+    public static RecipeFragment newInstance(UUID recipeID){
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_RECIPE_ID, recipeID);
+
+
+        RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRecipe = new Recipe();
+        UUID recipeID = (UUID) requireArguments().getSerializable(ARG_RECIPE_ID);
+        mRecipe = RecipeBook.get(getActivity()).getRecipe(recipeID);
     }
 
     @Override
@@ -92,6 +108,8 @@ public class RecipeFragment extends Fragment {
 
             }
         });
+
+        mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
         mTimeToMakeField.setText("Time: " + formatTime(mRecipe.getTimetoMake()));
         mDifficultyField = (TextView)v.findViewById(R.id.recipe_difficulty);
         mDifficultyField.setText("Difficulty: " + getStarRating(mRecipe.getDifficulty()));

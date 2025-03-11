@@ -115,4 +115,10 @@ public class Recipe {
         mInstructions = steps;
         mDifficulty = difficulty;
     }
+
+    public boolean areContentsSame(Recipe other){
+        return
+                (this.mId == other.mId) &&
+                (this.mTitle.equals(other.mTitle));
+    }
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class RecipeBook {
     private static RecipeBook sRecipeBook;
-    private List<Recipe> mRecipes;
+    private List<Recipe> mGeneratedRecipes;
     private List<Recipe> mFavoriteRecipes;
 
     public static RecipeBook get(Context context) {
@@ -19,19 +19,21 @@ public class RecipeBook {
         return sRecipeBook;
     }
     private RecipeBook(Context context) {
-        mRecipes = new ArrayList<>();
+        mGeneratedRecipes = new ArrayList<>();
+        mFavoriteRecipes = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Recipe recipe = new Recipe();
             recipe.setTitle("Recipe #" + i);
-            mRecipes.add(recipe);
+            mFavoriteRecipes.add(recipe);
         }
     }
 
-    public List<Recipe> getRecipes() {
-        return mRecipes;
+    public List<Recipe> getGeneratedRecipes() {
+        return mGeneratedRecipes;
     }
+
     public Recipe getRecipe(UUID id) {
-        for (Recipe recipe : mRecipes) {
+        for (Recipe recipe : mFavoriteRecipes) {
             if (recipe.getId().equals(id)) {
                 return recipe;
             }
@@ -40,12 +42,10 @@ public class RecipeBook {
     }
 
     public List<Recipe> getFavoriteRecipes() {
-       mFavoriteRecipes = new ArrayList<Recipe>();
-        for (Recipe recipe : mRecipes) {
-            if (recipe.isFavorite()) {
-                mFavoriteRecipes.add(recipe);
-            }
-        }
-        return mFavoriteRecipes;
+       return mFavoriteRecipes;
+    }
+
+    public void addFavoriteRecipe(Recipe newRecipe){
+        mFavoriteRecipes.add(newRecipe);
     }
 }
