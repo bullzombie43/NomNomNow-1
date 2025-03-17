@@ -2,18 +2,22 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+
 android {
     namespace = "com.bignerdranch.android.pantrypal"
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.bignerdranch.android.pantrypal"
-        minSdk = 27
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "OPENAI_API_KEY",
+            "\"${findProperty("OPENAI_API_KEY") ?: "none"}\"")
     }
 
     buildTypes {
@@ -29,6 +33,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -40,4 +47,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }

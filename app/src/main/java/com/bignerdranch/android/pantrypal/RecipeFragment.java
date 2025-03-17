@@ -3,6 +3,7 @@ package com.bignerdranch.android.pantrypal;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class RecipeFragment extends Fragment {
 
         mTitleField = (EditText) v.findViewById(R.id.recipe_title);
         mTitleField.setText(mRecipe.getTitle());
+        Log.d("mRecipe Is null", "" + (mRecipe == null));
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(

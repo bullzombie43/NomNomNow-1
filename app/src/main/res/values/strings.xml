@@ -13,6 +13,7 @@
     <string name="add_recipe">Add Recipe</string>
     <string name="new_recipe">New Recipe</string>
     <string name="delete_recipe">Delete Recipe</string>
+    <string name="generate_recipes">Generate Recipes</string>
 
 
 </resources>

@@ -20,17 +20,14 @@ public class HomeScreenActivity extends AppCompatActivity {
         Button savedRecipesButton = findViewById(R.id.button_saved_recipes);
 
         findRecipesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeScreenActivity.this, RecipeListActivity.class);
+            Intent intent = new Intent(HomeScreenActivity.this, RecipeGeneratorActivity.class);
             startActivity(intent);
         });
 
-        savedRecipesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeScreenActivity.this, RecipeListActivity.class);
-                intent.putExtra("SHOW_FAVORITES", true);
-                startActivity(intent);
-            }
+        savedRecipesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeScreenActivity.this, RecipeListActivity.class);
+            intent.putExtra(RecipeListFragment.SHOW_FAVORITES_EXTRA, true);
+            startActivity(intent);
         });
     }
 

@@ -24,23 +24,47 @@ import java.util.Objects;
 
 public class RecipeListFragment extends Fragment {
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+    public static final String SHOW_FAVORITES_EXTRA = "SHOW_FAVORITES";
+    public static final String SHOW_GENERATED_EXTRA = "SHOW_GENERATED";
+
     private RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mRecipeAdapter;
     private boolean mSubtitleVisible;
     private TextView mNoRecipesText;
     private Button mAddRecipe;
     private List<Recipe> mRecipeList;
+    private boolean showFavorite = true;
+
+    public static RecipeListFragment newInstance(boolean showGenerated) {
+        RecipeListFragment fragment = new RecipeListFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SHOW_GENERATED_EXTRA, showGenerated);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Log.d("Crime List Fragment", "On Create");
-        boolean showFavorites = requireActivity().getIntent().getBooleanExtra("SHOW_FAVORITES", false);
+        boolean showFavorites = requireActivity().getIntent().getBooleanExtra(SHOW_FAVORITES_EXTRA, false);
+        boolean isNull = getArguments() != null;
+        boolean showGenerated = getArguments() != null && getArguments().getBoolean(SHOW_GENERATED_EXTRA, false);
+
+        Log.d("Show Favorites", "" + showFavorites);
+        Log.d("Is Null", "" + isNull);
+        Log.d("RecipeListFragment", "SHOW_GENERATED_EXTRA: " + showGenerated);
 
         RecipeBook recipeBook = RecipeBook.get(getActivity());
 
         if (showFavorites) {
-            mRecipeList = recipeBook.getFavoriteRecipes(); // Only show saved recipes
+            mRecipeList = recipeBook.getFavoriteRecipes();// Only show saved recipes
+            Log.d("Num Favorites", "" + recipeBook.getFavoriteRecipes().size());
+            showFavorite = true;
+        } else if (showGenerated){
+            mRecipeList = recipeBook.getGeneratedRecipes();
+            showFavorite = false;
         } else {
             mRecipeList = recipeBook.getAllRecipes(); // Show all (generated + saved)
         }
@@ -118,7 +142,7 @@ public class RecipeListFragment extends Fragment {
 
     private void updateUI() {
         RecipeBook crimeLab = RecipeBook.get(getActivity());
-        List<Recipe> recipes = crimeLab.getFavoriteRecipes();
+        List<Recipe> recipes =  showFavorite? crimeLab.getFavoriteRecipes() : crimeLab.getGeneratedRecipes();
         Log.d("New Size", "" + recipes.size());
         if(mRecipeAdapter == null){
             mRecipeAdapter = new RecipeAdapter(this, recipes);
