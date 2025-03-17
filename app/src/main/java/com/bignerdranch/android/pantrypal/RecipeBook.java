@@ -92,7 +92,7 @@ public class RecipeBook {
         executor.execute(() -> {
             mGeneratedRecipes = new ArrayList<>();
             try {
-                mGeneratedRecipes = ChatGPTRecipeFetcher.fetchRecipes(1, ingredients);
+                mGeneratedRecipes = ChatGPTRecipeFetcher.fetchRecipes(3, ingredients);
                 Log.d("Generated Recipes", mGeneratedRecipes.size() + " recipes generated");
                 future.complete(null); // Signal success
             } catch (IOException | JSONException e) {
