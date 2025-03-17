@@ -29,11 +29,21 @@ public class RecipeListFragment extends Fragment {
     private boolean mSubtitleVisible;
     private TextView mNoRecipesText;
     private Button mAddRecipe;
+    private List<Recipe> mRecipeList;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Log.d("Crime List Fragment", "On Create");
+        boolean showFavorites = requireActivity().getIntent().getBooleanExtra("SHOW_FAVORITES", false);
+
+        RecipeBook recipeBook = RecipeBook.get(getActivity());
+
+        if (showFavorites) {
+            mRecipeList = recipeBook.getFavoriteRecipes(); // Only show saved recipes
+        } else {
+            mRecipeList = recipeBook.getAllRecipes(); // Show all (generated + saved)
+        }
     }
 
     @Override

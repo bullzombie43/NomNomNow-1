@@ -24,7 +24,7 @@ public class RecipeBook {
         for (int i = 0; i < 100; i++) {
             Recipe recipe = new Recipe();
             recipe.setTitle("Recipe #" + i);
-            mFavoriteRecipes.add(recipe);
+            mGeneratedRecipes.add(recipe);
         }
     }
 
@@ -32,7 +32,7 @@ public class RecipeBook {
         return mGeneratedRecipes;
     }
 
-    public Recipe getRecipe(UUID id) {
+    public Recipe getSavedRecipe(UUID id) {
         for (Recipe recipe : mFavoriteRecipes) {
             if (recipe.getId().equals(id)) {
                 return recipe;
@@ -41,11 +41,40 @@ public class RecipeBook {
         return null;
     }
 
-    public List<Recipe> getFavoriteRecipes() {
-       return mFavoriteRecipes;
+    public Recipe getGeneratedRecipe(UUID id) {
+        for (Recipe recipe : mGeneratedRecipes) {
+            if (recipe.getId().equals(id)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
-    public void addFavoriteRecipe(Recipe newRecipe){
-        mFavoriteRecipes.add(newRecipe);
+    public List<Recipe> getFavoriteRecipes() {
+        List<Recipe> savedRecipes = new ArrayList<>();
+        for (Recipe recipe : mGeneratedRecipes) {
+            if (recipe.isFavorite()) {
+                savedRecipes.add(recipe);
+            }
+        }
+        return savedRecipes;
+    }
+
+    public List<Recipe> getAllRecipes() {
+        List<Recipe> allRecipes = new ArrayList<>(mGeneratedRecipes);
+        allRecipes.addAll(mFavoriteRecipes);
+        return allRecipes;
+    }
+
+    public void addFavoriteRecipe(Recipe recipe) {
+        if (!mFavoriteRecipes.contains(recipe)) {
+            recipe.setFavorite(true);
+            mFavoriteRecipes.add(recipe);
+        }
+    }
+
+    public void removeFavoriteRecipe(Recipe recipe) {
+        recipe.setFavorite(false);
+        mFavoriteRecipes.remove(recipe);
     }
 }

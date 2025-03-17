@@ -41,7 +41,12 @@ public class RecipeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID recipeID = (UUID) requireArguments().getSerializable(ARG_RECIPE_ID);
-        mRecipe = RecipeBook.get(getActivity()).getRecipe(recipeID);
+        RecipeBook recipeBook = RecipeBook.get(getActivity());
+        mRecipe = recipeBook.getSavedRecipe(recipeID); // Check if it's saved
+
+        if (mRecipe == null) {
+            mRecipe = recipeBook.getGeneratedRecipe(recipeID); // Otherwise, check AI-generated
+        }
     }
 
     @Override
@@ -114,12 +119,24 @@ public class RecipeFragment extends Fragment {
         mDifficultyField = (TextView)v.findViewById(R.id.recipe_difficulty);
         mDifficultyField.setText("Difficulty: " + getStarRating(mRecipe.getDifficulty()));
 
-        mFavoritedCheckBox = (CheckBox)v.findViewById(R.id.recipe_favorite); mFavoritedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                mRecipe.setFavorite(isChecked);
-            } });
+        mFavoritedCheckBox = (CheckBox) v.findViewById(R.id.recipe_favorite);
+        mFavoritedCheckBox.setChecked(mRecipe.isFavorite());
+
+        mFavoritedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mRecipe.setFavorite(isChecked);
+
+            RecipeBook recipeBook = RecipeBook.get(getActivity());
+
+            if (isChecked) {
+                if (recipeBook.getSavedRecipe(mRecipe.getId()) == null) {
+                    recipeBook.addFavoriteRecipe(mRecipe);
+                }
+            } else {
+                recipeBook.removeFavoriteRecipe(mRecipe);
+            }
+        });
+
+
         return v;
     }
 
