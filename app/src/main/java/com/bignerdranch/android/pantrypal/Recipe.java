@@ -121,4 +121,16 @@ public class Recipe {
                 (this.mId == other.mId) &&
                 (this.mTitle.equals(other.mTitle));
     }
+
+    public Recipe withFavorite(boolean favorite){
+        return new Recipe(
+                this.mId,
+                this.mTitle,
+                this.mIngredients,
+                favorite,
+                this.mTimetoMake,
+                this.mInstructions,
+                this.mDifficulty
+        );
+    }
 }

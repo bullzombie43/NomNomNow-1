@@ -111,10 +111,10 @@ public class RecipeFragment extends Fragment {
 
         mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
         mTimeToMakeField.setText("Time: " + formatTime(mRecipe.getTimetoMake()));
-        mDifficultyField = (TextView)v.findViewById(R.id.recipe_difficulty);
+        mDifficultyField = (TextView) v.findViewById(R.id.recipe_difficulty);
         mDifficultyField.setText("Difficulty: " + getStarRating(mRecipe.getDifficulty()));
 
-        mFavoritedCheckBox = (CheckBox)v.findViewById(R.id.recipe_favorite); mFavoritedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mFavoritedCheckBox = (CheckBox) v.findViewById(R.id.recipe_favorite); mFavoritedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
