@@ -74,11 +74,12 @@ public class RecipeBook {
     }
 
     public void addFavoriteRecipe(Recipe recipe) {
-        if (recipe != null && !mFavoriteRecipes.contains(recipe)) {
+        if (recipe.getId() == null) {
+            recipe.setId(UUID.randomUUID());  // Ensure recipe has a valid ID
+        }
+        if (!mFavoriteRecipes.contains(recipe)) {
             recipe.setFavorite(true);
             mFavoriteRecipes.add(recipe);
-        } else {
-            Log.e("RecipeBook", "Attempted to add a null recipe!");
         }
     }
 

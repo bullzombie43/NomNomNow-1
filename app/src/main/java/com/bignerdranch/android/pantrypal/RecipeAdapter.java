@@ -1,5 +1,6 @@
 package com.bignerdranch.android.pantrypal;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +33,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeHolder holder, int position) {
-        if (mRecipes == null || mRecipes.isEmpty()) {
-            return; // Prevent crash if empty
-        }
+    public void onBindViewHolder(RecipeHolder holder, int position) {
         Recipe recipe = mRecipes.get(position);
-        holder.bind(recipe);
+
+        if (recipe != null) {
+            holder.bind(recipe);
+
+            holder.itemView.setOnClickListener(v -> {
+                Log.d("RecipeAdapter", "Clicked recipe ID: " + recipe.getId());
+
+                Intent intent = RecipeActivity.newIntent(v.getContext(), recipe.getId());
+                v.getContext().startActivity(intent);
+            });
+        }
     }
 
     @Override

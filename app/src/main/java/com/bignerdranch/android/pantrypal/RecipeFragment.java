@@ -43,13 +43,22 @@ public class RecipeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID recipeID = (UUID) requireArguments().getSerializable(ARG_RECIPE_ID);
+        Log.d("RecipeFragment", "Received recipe ID: " + recipeID);
+
         RecipeBook recipeBook = RecipeBook.get(getActivity());
-        mRecipe = recipeBook.getSavedRecipe(recipeID); // Check if it's saved
+        mRecipe = recipeBook.getSavedRecipe(recipeID); // Check saved recipes
+        Log.d("RecipeFragment", "Retrieved saved recipe: " + (mRecipe != null));
 
         if (mRecipe == null) {
-            mRecipe = recipeBook.getGeneratedRecipe(recipeID); // Otherwise, check AI-generated
+            mRecipe = recipeBook.getGeneratedRecipe(recipeID); // Check AI-generated
+            Log.d("RecipeFragment", "Retrieved generated recipe: " + (mRecipe != null));
+        }
+
+        if (mRecipe == null) {
+            Log.e("RecipeFragment", "Error: Recipe not found!");
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
