@@ -2,60 +2,66 @@ package com.bignerdranch.android.pantrypal;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-class RecipeAdapter extends RecyclerView.Adapter<RecipeHolder>{
-    private final RecipeListFragment mRecipeListFragment;
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHolder> {
     private List<Recipe> mRecipes;
 
-    public RecipeAdapter(RecipeListFragment recipeListFragment, List<Recipe> recipes) {
-        mRecipeListFragment = recipeListFragment;
+    public RecipeAdapter(List<Recipe> recipes) {
+        if (recipes == null) {
+            Log.e("RecipeAdapter", "Received null recipe list!");
+            recipes = new ArrayList<>();
+        }
         mRecipes = recipes;
-        Log.d("CrimeAdapter", "new construction");
     }
 
     @NonNull
     @Override
     public RecipeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(mRecipeListFragment.getActivity());
-        int resourceID;
-
-        resourceID = R.layout.list_item_recipe;
-
-        return new RecipeHolder(
-                layoutInflater.inflate(resourceID, parent, false),
-                mRecipeListFragment);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.list_item_recipe, parent, false);
+        return new RecipeHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecipeHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecipeHolder holder, int position) {
+        if (mRecipes == null || mRecipes.isEmpty()) {
+            return; // Prevent crash if empty
+        }
         Recipe recipe = mRecipes.get(position);
         holder.bind(recipe);
     }
 
     @Override
     public int getItemCount() {
-        return mRecipes.size();
+        return mRecipes == null ? 0 : mRecipes.size();
     }
 
-    @Override
-    public int getItemViewType(int position){
-        return R.id.list_item_crime_serious;
-    }
-
-    public void updateCrimeList(List<Recipe> newRecipes){
-
-        RecipeListDiffCallback diffCallback =
-                new RecipeListDiffCallback(mRecipes, newRecipes);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+    public void updateRecipeList(List<Recipe> newRecipes) {
         mRecipes = newRecipes;
-        diffResult.dispatchUpdatesTo(this);
+        notifyDataSetChanged();
     }
 
+    static class RecipeHolder extends RecyclerView.ViewHolder {
+        private final TextView mTitleTextView;
+        private Recipe mRecipe;
+
+        public RecipeHolder(View itemView) {
+            super(itemView);
+            mTitleTextView = itemView.findViewById(R.id.recipe_title);
+        }
+
+        public void bind(Recipe recipe) {
+            mRecipe = recipe;
+            mTitleTextView.setText(recipe.getTitle());
+        }
+    }
 }

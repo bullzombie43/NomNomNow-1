@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -118,8 +119,16 @@ public class RecipeFragment extends Fragment {
 
         mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
         mTimeToMakeField.setText("Time: " + formatTime(mRecipe.getTimetoMake()));
-        mDifficultyField = (TextView)v.findViewById(R.id.recipe_difficulty);
-        mDifficultyField.setText("Difficulty: " + getStarRating(mRecipe.getDifficulty()));
+        RatingBar ratingBar = v.findViewById(R.id.recipe_difficulty);
+
+
+        ratingBar.setRating(mRecipe.getDifficulty());
+
+        ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
+            if (fromUser) {
+                mRecipe.setDifficulty((int) rating);
+            }
+        });
 
         mFavoritedCheckBox = (CheckBox) v.findViewById(R.id.recipe_favorite);
         mFavoritedCheckBox.setChecked(mRecipe.isFavorite());
@@ -152,14 +161,4 @@ public class RecipeFragment extends Fragment {
         }
     }
 
-    private String getStarRating(double difficulty) {
-        int fullStars = (int) difficulty;
-        boolean halfStar = (difficulty - fullStars) >= 0.5;
-
-        StringBuilder stars = new StringBuilder("★".repeat(fullStars));
-        if (halfStar) stars.append("☆");
-        while (stars.length() < 5) stars.append("☆");
-
-        return stars.toString();
-    }
 }
