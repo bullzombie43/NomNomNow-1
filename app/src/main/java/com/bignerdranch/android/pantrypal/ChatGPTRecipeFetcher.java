@@ -38,9 +38,15 @@ public class ChatGPTRecipeFetcher {
                 + "Rules:\n"
                 + "- Output only valid JSON, with no extra text or explanations.\n"
                 + "- Use metric units: grams for solids, milliliters for liquids.\n"
+                + "- Difficulty is between 1 - 5.\n"
                 + "- Ensure all values follow the correct data type:\n"
                 + "  - totalTimeMinutes, servings, and difficulty must be numbers, not strings.\n"
-                + "- Ensure ingredient names are formatted clearly and concisely.";
+                + "- Ensure ingredient names are formatted clearly and concisely.\n"
+                + "- If generating multiple recipes with the same input ingredients, vary the recipes by sometimes:\n"
+                + "  - Using only the provided ingredients,\n"
+                + "  - Adding a few common complementary ingredients to enhance the recipe while keeping it realistic.\n"
+                + "- Each time, generate a complete and distinct recipe within the above JSON format.";
+
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", "gpt-4o-mini");
