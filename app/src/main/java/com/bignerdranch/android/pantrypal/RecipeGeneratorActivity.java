@@ -37,8 +37,15 @@ public class RecipeGeneratorActivity extends AppCompatActivity {
         generateButton = findViewById(R.id.generateButton);
         fragmentContainerView = findViewById(R.id.fragment_container);
 
+        RecipeBook.get(this).resetGeneratedRecipes();
+
         loadRecipeListFragment();
         setupGenerateButton();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
     }
 
     private void setupGenerateButton() {
@@ -89,7 +96,7 @@ public class RecipeGeneratorActivity extends AppCompatActivity {
     }
 
     private void loadRecipeListFragment() {
-        RecipeListFragment fragment = RecipeListFragment.newInstance(true);
+        RecipeListFragmentBarebones fragment = RecipeListFragmentBarebones.newInstance(true);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)

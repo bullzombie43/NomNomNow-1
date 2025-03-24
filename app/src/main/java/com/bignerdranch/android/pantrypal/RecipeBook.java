@@ -105,4 +105,8 @@ public class RecipeBook {
 
         return future;
     }
+
+    public void resetGeneratedRecipes(){
+        mGeneratedRecipes.clear();
+    }
 }
