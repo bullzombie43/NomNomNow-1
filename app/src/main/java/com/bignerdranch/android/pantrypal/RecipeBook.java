@@ -27,7 +27,7 @@ public class RecipeBook {
     private RecipeBook(Context context) {
         mGeneratedRecipes = new ArrayList<>();
         mFavoriteRecipes = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 0; i++) {
             Recipe recipe = new Recipe().withFavorite(true);
             recipe.setTitle("Recipe #" + i);
             mFavoriteRecipes.add(recipe);
