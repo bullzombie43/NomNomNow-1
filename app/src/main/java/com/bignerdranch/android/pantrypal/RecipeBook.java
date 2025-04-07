@@ -1,7 +1,14 @@
 package com.bignerdranch.android.pantrypal;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.bignerdranch.android.pantrypal.database.RecipeBaseHelper;
+import com.bignerdranch.android.pantrypal.database.RecipeCursorWrapper;
+import com.bignerdranch.android.pantrypal.database.RecipeDbSchema;
 
 import org.json.JSONException;
 
@@ -15,7 +22,8 @@ import java.util.concurrent.ExecutorService;
 public class RecipeBook {
     private static RecipeBook sRecipeBook;
     private List<Recipe> mGeneratedRecipes;
-    private List<Recipe> mFavoriteRecipes;
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
 
     public static RecipeBook get(Context context) {
         if (sRecipeBook == null) {
@@ -24,14 +32,37 @@ public class RecipeBook {
         return sRecipeBook;
     }
 
+    private RecipeCursorWrapper queryRecipes(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                RecipeDbSchema.RecipeTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+
+        return new RecipeCursorWrapper(cursor);
+    }
+
+    private static ContentValues getContentValues(Recipe recipe) {
+        ContentValues values = new ContentValues();
+        values.put(RecipeDbSchema.RecipeTable.Cols.UUID, recipe.getId().toString());
+        values.put(RecipeDbSchema.RecipeTable.Cols.TITLE, recipe.getTitle());
+        values.put(RecipeDbSchema.RecipeTable.Cols.TIME, recipe.getTimetoMake());
+        values.put(RecipeDbSchema.RecipeTable.Cols.FAVORITED, recipe.isFavorite() ? 1 : 0);
+        values.put(RecipeDbSchema.RecipeTable.Cols.INGREDIENTS, serializeIngredients(recipe.getIngredients()));
+        values.put(RecipeDbSchema.RecipeTable.Cols.INSTRUCTIONS, serializeInstructions(recipe.getInstructions()));
+        values.put(RecipeDbSchema.RecipeTable.Cols.DIFFICULTY, recipe.getDifficulty());
+        return values;
+    }
+
+
     private RecipeBook(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new RecipeBaseHelper(mContext).getWritableDatabase();
         mGeneratedRecipes = new ArrayList<>();
-        mFavoriteRecipes = new ArrayList<>();
-        for (int i = 0; i < 0; i++) {
-            Recipe recipe = new Recipe().withFavorite(true);
-            recipe.setTitle("Recipe #" + i);
-            mFavoriteRecipes.add(recipe);
-        }
     }
 
     public List<Recipe> getGeneratedRecipes() {
@@ -40,13 +71,22 @@ public class RecipeBook {
     }
 
     public Recipe getSavedRecipe(UUID id) {
-        for (Recipe recipe : mFavoriteRecipes) {
-            if (recipe.getId().equals(id)) {
-                return recipe;
+        RecipeCursorWrapper cursor = queryRecipes(
+                RecipeDbSchema.RecipeTable.Cols.UUID + " = ?",
+                new String[] { id.toString() }
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
+            cursor.moveToFirst();
+            return cursor.getRecipe();
+        } finally {
+            cursor.close();
         }
-        return null;
     }
+
 
     public Recipe getGeneratedRecipe(UUID id) {
         for (Recipe recipe : mGeneratedRecipes) {
@@ -58,34 +98,47 @@ public class RecipeBook {
     }
 
     public List<Recipe> getFavoriteRecipes() {
-        List<Recipe> validFavorites = new ArrayList<>();
-        for (Recipe recipe : mFavoriteRecipes) {
-            if (recipe != null && recipe.isFavorite()) {
-                validFavorites.add(recipe);
+        List<Recipe> favorites = new ArrayList<>();
+        RecipeCursorWrapper cursor = queryRecipes(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Recipe recipe = cursor.getRecipe();
+                if (recipe.isFavorite()) {
+                    favorites.add(recipe);
+                }
+                cursor.moveToNext();
             }
+        } finally {
+            cursor.close();
         }
-        return validFavorites;
+
+        return favorites;
     }
 
     public List<Recipe> getAllRecipes() {
         List<Recipe> allRecipes = new ArrayList<>(mGeneratedRecipes);
-        allRecipes.addAll(mFavoriteRecipes);
+        allRecipes.addAll(getFavoriteRecipes());  // Use getFavoriteRecipes() to get the favorite recipes
         return allRecipes;
     }
 
     public void addFavoriteRecipe(Recipe recipe) {
         if (recipe.getId() == null) {
-            recipe.setId(UUID.randomUUID());  // Ensure recipe has a valid ID
+            recipe.setId(UUID.randomUUID());
         }
-        if (!mFavoriteRecipes.contains(recipe)) {
-            recipe.setFavorite(true);
-            mFavoriteRecipes.add(recipe);
-        }
+        recipe.setFavorite(true);
+
+        ContentValues values = getContentValues(recipe);
+        mDatabase.insert(RecipeDbSchema.RecipeTable.NAME, null, values);
     }
 
     public void removeFavoriteRecipe(Recipe recipe) {
-        recipe.setFavorite(false);
-        mFavoriteRecipes.remove(recipe);
+        mDatabase.delete(
+                RecipeDbSchema.RecipeTable.NAME,
+                RecipeDbSchema.RecipeTable.Cols.UUID + " = ?",
+                new String[] { recipe.getId().toString() }
+        );
     }
 
     public CompletableFuture<Void> generateRecipes(List<String> ingredients, ExecutorService executor) {
@@ -109,4 +162,17 @@ public class RecipeBook {
     public void resetGeneratedRecipes(){
         mGeneratedRecipes.clear();
     }
+
+    private static String serializeIngredients(List<Ingredient> ingredients) {
+        StringBuilder sb = new StringBuilder();
+        for (Ingredient ingredient : ingredients) {
+            sb.append(ingredient.getName()).append("|").append(ingredient.getQuantity()).append(";");
+        }
+        return sb.toString();
+    }
+
+    private static String serializeInstructions(List<String> instructions) {
+        return String.join(";", instructions);
+    }
+
 }
