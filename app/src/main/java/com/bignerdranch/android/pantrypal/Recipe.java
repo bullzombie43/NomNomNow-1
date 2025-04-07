@@ -123,6 +123,21 @@ public class Recipe {
         return mDifficulty;
     }
 
+    public String getDifficultyString() {
+        switch (mDifficulty) {
+            case 1:
+                return "Easy";
+            case 2:
+            case 3:
+                return "Medium";
+            case 4:
+            case 5:
+                return "Hard";
+            default:
+                return "Unknown"; // Or handle the default case as appropriate
+        }
+    }
+
     public void setDifficulty(int difficulty) {
         mDifficulty = difficulty;
         mChanged = true;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PantryPal</string>
+    <string name="app_name">NomNomNow</string>
      <string name="recipe_title_label">Title</string>
     <string name="recipe_ingredients_label">Ingredients</string>
     <string name="recipe_favorite_label">Favorite</string>
@@ -16,6 +16,7 @@
     <string name="generate_recipes">Generate Recipes</string>
     <string name="clear_recipes">Clear Recipes</string>
     <string name="clear_recipes_string">Clear Recipes</string>
+    <string name="difficulty">difficulty</string>
 
 
 </resources>

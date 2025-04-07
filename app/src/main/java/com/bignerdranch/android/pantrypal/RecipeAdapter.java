@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,15 +62,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     static class RecipeHolder extends RecyclerView.ViewHolder {
         private final TextView mTitleTextView;
         private Recipe mRecipe;
+        private final Button mDifficultyButton;
 
         public RecipeHolder(View itemView) {
             super(itemView);
             mTitleTextView = itemView.findViewById(R.id.recipe_title);
+            mDifficultyButton = itemView.findViewById(R.id.button);
+
         }
 
         public void bind(Recipe recipe) {
             mRecipe = recipe;
             mTitleTextView.setText(recipe.getTitle());
+
+            mDifficultyButton.setEnabled(false);
+            mDifficultyButton.setText(recipe.getDifficultyString());
         }
     }
 }
