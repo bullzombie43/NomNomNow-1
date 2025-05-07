@@ -33,6 +33,9 @@ public class RecipeGeneratorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generator);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         // Initialize views
         ingredientsEditText = findViewById(R.id.ingredientsEditText);
         generateButton = findViewById(R.id.generateButton);
@@ -42,6 +45,14 @@ public class RecipeGeneratorActivity extends AppCompatActivity {
 
         loadRecipeListFragment();
         setupGenerateButton();
+
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override
