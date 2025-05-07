@@ -1,6 +1,9 @@
 package com.bignerdranch.android.pantrypal;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +49,16 @@ public class Recipe {
         List<String> instructions = new ArrayList<>();
 
         for(int i = 0; i < array.length(); i++){
-            instructions.add(array.getString(i));
+            String entry = array.getString(i);
+
+            // Split on "Step X:" patterns
+            String[] steps = entry.split("(?=Step \\d+:)");
+            for (String step : steps) {
+                String trimmed = step.trim();
+                if (!trimmed.isEmpty()) {
+                    instructions.add(trimmed);
+                }
+            }
         }
 
         return instructions;
@@ -92,6 +104,7 @@ public class Recipe {
         mChanged = true;
     }
 
+
     public boolean isFavorite() {
         return mIsFavorite;
     }
@@ -117,6 +130,10 @@ public class Recipe {
     public void setInstructions(List<String> instructions) {
         mInstructions = instructions;
         mChanged = true;
+    }
+
+    public void setInstructions(String instructions){
+        mInstructions = Arrays.asList((TextUtils.split(", ", instructions)));
     }
 
     public int getDifficulty() {

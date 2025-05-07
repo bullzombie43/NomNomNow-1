@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.bignerdranch.android.pantrypal.database.RecipeDbSchema.RecipeTable;
 
 public class RecipeBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DATABASE_NAME = "recipeBase.db";
     public RecipeBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -19,6 +19,10 @@ public class RecipeBaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < newVersion) {
+            // One-time wipe of all existing recipes
+            db.delete(RecipeDbSchema.RecipeTable.NAME, null, null);
+        }
     }
 
 }

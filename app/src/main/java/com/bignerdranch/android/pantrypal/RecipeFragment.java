@@ -14,8 +14,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.List;
 import java.util.UUID;
 
 public class RecipeFragment extends Fragment {
@@ -26,8 +29,9 @@ public class RecipeFragment extends Fragment {
     private EditText mTitleField;
     private EditText mIngredientsField;
     private EditText mTimeToMakeField;
-    private EditText mInstructionsField;
+    private RecyclerView mInstructionsField;
     private TextView mDifficultyField;
+    private List<String> mInstructionList;
 
     public static RecipeFragment newInstance(UUID recipeID){
         Bundle args = new Bundle();
@@ -106,30 +110,15 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-        mInstructionsField = (EditText) v.findViewById(R.id.recipe_instructions);
-        mInstructionsField.setText(android.text.TextUtils.join(", ", mRecipe.getInstructions()));
-        mIngredientsField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(
-                    CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(
-                    CharSequence s, int start, int before, int count) {
-                mRecipe.setTitle(s.toString());
-                mRecipe.setChanged(true);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        mInstructionList = mRecipe.getInstructions();
+        mInstructionsField = v.findViewById(R.id.instructionList);
+        mInstructionsField.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        InstructionAdapter adapter = new InstructionAdapter(mInstructionList);
+        mInstructionsField.setAdapter(adapter);
 
         mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
         mTimeToMakeField.setText("Time: " + formatTime(mRecipe.getTimetoMake()));
         RatingBar ratingBar = v.findViewById(R.id.recipe_difficulty);
-
 
         ratingBar.setRating(mRecipe.getDifficulty());
 
@@ -169,5 +158,4 @@ public class RecipeFragment extends Fragment {
             return mins > 0 ? String.format("%d hr %d min", hours, mins) : String.format("%d hr", hours);
         }
     }
-
 }

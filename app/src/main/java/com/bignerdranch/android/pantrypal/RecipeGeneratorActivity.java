@@ -2,6 +2,7 @@ package com.bignerdranch.android.pantrypal;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -86,6 +87,7 @@ public class RecipeGeneratorActivity extends AppCompatActivity {
                     } else {
                         // Failure
                         runOnUiThread(() -> showToast("Failed to generate recipes: " + throwable.getMessage()));
+                        Log.d("Generation Failure", "Failed to generate recipes: " + throwable.getMessage());
                     }
         }, getMainExecutor());
 
