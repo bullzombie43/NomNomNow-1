@@ -177,7 +177,7 @@ public class Recipe {
                 UUID.randomUUID(),
                 "basic",
                 List.of("Ingredient 1", "Ingredient 2"),
-                List.of("Step 1", "Step 2"),
+                List.of("Step 1", "Step 2", "Step 3", "Step 4", "Step 5", "Step 6", "Step 7"),
                 false,
                 30.0,
                 1);

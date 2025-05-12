@@ -181,4 +181,13 @@ public class RecipeBook {
         return jsonArray.toString();
     }
 
+    public void updateSavedRecipes(Recipe recipe) {
+        ContentValues values = getContentValues(recipe);
+        mDatabase.update(
+                RecipeDbSchema.RecipeTable.NAME,
+                values,
+                RecipeDbSchema.RecipeTable.Cols.UUID + " = ?",
+                new String[] { recipe.getId().toString() });
+    }
+
 }

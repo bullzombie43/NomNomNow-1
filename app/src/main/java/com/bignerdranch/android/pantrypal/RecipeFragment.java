@@ -32,6 +32,7 @@ public class RecipeFragment extends Fragment {
     private RecyclerView mInstructionsField;
     private TextView mDifficultyField;
     private List<String> mInstructionList;
+    private InstructionAdapter adapter;
 
     public static RecipeFragment newInstance(UUID recipeID){
         Bundle args = new Bundle();
@@ -111,9 +112,15 @@ public class RecipeFragment extends Fragment {
         });
 
         mInstructionList = mRecipe.getInstructions();
+
+        // Ensure a trailing blank instruction
+        if (mInstructionList.isEmpty() || !mInstructionList.get(mInstructionList.size() - 1).isEmpty()) {
+            mInstructionList.add("");  // Add a blank step at the end
+        }
+
         mInstructionsField = v.findViewById(R.id.instructionList);
         mInstructionsField.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        InstructionAdapter adapter = new InstructionAdapter(mInstructionList);
+        adapter = new InstructionAdapter(mRecipe);
         mInstructionsField.setAdapter(adapter);
 
         mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
@@ -156,6 +163,20 @@ public class RecipeFragment extends Fragment {
             int hours = (int) (minutes / 60);
             int mins = (int) (minutes % 60);
             return mins > 0 ? String.format("%d hr %d min", hours, mins) : String.format("%d hr", hours);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Save updated instructions here
+        if (adapter != null) {
+            List<String> updatedInstructions = adapter.getUpdatedInstructions();
+            mRecipe.setInstructions(updatedInstructions);
+
+            // Then update your DB
+            RecipeBook.get(getContext()).updateSavedRecipes(mRecipe);
         }
     }
 }
