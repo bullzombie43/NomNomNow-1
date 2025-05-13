@@ -175,4 +175,16 @@ public class RecipeBook {
         return String.join(";", instructions);
     }
 
+    public void updateFavoriteRecipe(Recipe recipe) {
+        ContentValues values = getContentValues(recipe);
+
+        mDatabase.update(
+                RecipeDbSchema.RecipeTable.NAME,
+                values,
+                RecipeDbSchema.RecipeTable.Cols.UUID + " = ?",
+                new String[]{ recipe.getId().toString() }
+        );
+    }
+
+
 }

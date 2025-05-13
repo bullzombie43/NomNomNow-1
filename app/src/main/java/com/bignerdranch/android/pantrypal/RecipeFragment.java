@@ -136,6 +136,8 @@ public class RecipeFragment extends Fragment {
         ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
             if (fromUser) {
                 mRecipe.setDifficulty((int) rating);
+                RecipeBook.get(requireContext()).updateFavoriteRecipe(mRecipe);
+
             }
         });
 
