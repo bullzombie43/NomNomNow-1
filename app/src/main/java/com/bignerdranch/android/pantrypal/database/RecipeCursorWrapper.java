@@ -6,6 +6,9 @@ import android.database.CursorWrapper;
 import com.bignerdranch.android.pantrypal.Ingredient;
 import com.bignerdranch.android.pantrypal.Recipe;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,13 +19,13 @@ public class RecipeCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    public Recipe getRecipe() {
+    public Recipe getRecipe() throws JSONException {
         String uuidString = getString(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.UUID));
         String title = getString(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.TITLE));
         double time = getDouble(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.TIME));
         int favorited = getInt(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.FAVORITED));
         String ingredientsString = getString(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.INGREDIENTS));
-        String instructionsString = getString(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.INSTRUCTIONS));
+        List<String> instructionList = getInstructionList();
         int difficulty = getInt(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.DIFFICULTY));
 
 
@@ -46,17 +49,16 @@ public class RecipeCursorWrapper extends CursorWrapper {
         }
         recipe.setIngredients(ingredients);
 
-        // Convert comma-separated instructions to List<String>
-        List<String> instructions = new ArrayList<>();
-        if (instructionsString != null && !instructionsString.isEmpty()) {
-            String[] steps = instructionsString.split(",");
-            for (String step : steps) {
-                instructions.add(step.trim());
-            }
-        }
-        recipe.setInstructions(instructions);
+        recipe.setInstructions(instructionList);
 
         return recipe;
+    }
+
+    public List<String> getInstructionList() throws JSONException {
+        String instructionsString = getString(getColumnIndex(RecipeDbSchema.RecipeTable.Cols.INSTRUCTIONS));
+        JSONArray array = new JSONArray(instructionsString);
+
+        return Recipe.parseInstructions(array);
     }
 
 

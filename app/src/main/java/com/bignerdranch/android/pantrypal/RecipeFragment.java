@@ -14,8 +14,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.List;
 import java.util.UUID;
 
 public class RecipeFragment extends Fragment {
@@ -26,8 +29,10 @@ public class RecipeFragment extends Fragment {
     private EditText mTitleField;
     private EditText mIngredientsField;
     private EditText mTimeToMakeField;
-    private EditText mInstructionsField;
+    private RecyclerView mInstructionsField;
     private TextView mDifficultyField;
+    private List<String> mInstructionList;
+    private InstructionAdapter adapter;
 
     public static RecipeFragment newInstance(UUID recipeID){
         Bundle args = new Bundle();
@@ -106,30 +111,21 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-        mInstructionsField = (EditText) v.findViewById(R.id.recipe_instructions);
-        mInstructionsField.setText(android.text.TextUtils.join(", ", mRecipe.getInstructions()));
-        mIngredientsField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(
-                    CharSequence s, int start, int count, int after) {
+        mInstructionList = mRecipe.getInstructions();
 
-            }
-            @Override
-            public void onTextChanged(
-                    CharSequence s, int start, int before, int count) {
-                mRecipe.setTitle(s.toString());
-                mRecipe.setChanged(true);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
+        // Ensure a trailing blank instruction
+        if (mInstructionList.isEmpty() || !mInstructionList.get(mInstructionList.size() - 1).isEmpty()) {
+            mInstructionList.add("");  // Add a blank step at the end
+        }
 
-            }
-        });
+        mInstructionsField = v.findViewById(R.id.instructionList);
+        mInstructionsField.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        adapter = new InstructionAdapter(mRecipe);
+        mInstructionsField.setAdapter(adapter);
 
         mTimeToMakeField = (EditText) v.findViewById(R.id.recipe_timetomake);
         mTimeToMakeField.setText("Time: " + formatTime(mRecipe.getTimetoMake()));
         RatingBar ratingBar = v.findViewById(R.id.recipe_difficulty);
-
 
         ratingBar.setRating(mRecipe.getDifficulty());
 
@@ -172,4 +168,17 @@ public class RecipeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Save updated instructions here
+        if (adapter != null) {
+            List<String> updatedInstructions = adapter.getUpdatedInstructions();
+            mRecipe.setInstructions(updatedInstructions);
+
+            // Then update your DB
+            RecipeBook.get(getContext()).updateSavedRecipes(mRecipe);
+        }
+    }
 }

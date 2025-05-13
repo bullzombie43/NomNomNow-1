@@ -10,6 +10,7 @@ import com.bignerdranch.android.pantrypal.database.RecipeBaseHelper;
 import com.bignerdranch.android.pantrypal.database.RecipeCursorWrapper;
 import com.bignerdranch.android.pantrypal.database.RecipeDbSchema;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -82,6 +83,8 @@ public class RecipeBook {
             }
             cursor.moveToFirst();
             return cursor.getRecipe();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         } finally {
             cursor.close();
         }
@@ -110,6 +113,8 @@ public class RecipeBook {
                 }
                 cursor.moveToNext();
             }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         } finally {
             cursor.close();
         }
@@ -172,7 +177,17 @@ public class RecipeBook {
     }
 
     private static String serializeInstructions(List<String> instructions) {
-        return String.join(";", instructions);
+        JSONArray jsonArray = new JSONArray(instructions);
+        return jsonArray.toString();
+    }
+
+    public void updateSavedRecipes(Recipe recipe) {
+        ContentValues values = getContentValues(recipe);
+        mDatabase.update(
+                RecipeDbSchema.RecipeTable.NAME,
+                values,
+                RecipeDbSchema.RecipeTable.Cols.UUID + " = ?",
+                new String[] { recipe.getId().toString() });
     }
 
     public void updateFavoriteRecipe(Recipe recipe) {

@@ -17,6 +17,7 @@
     <string name="clear_recipes">Clear Recipes</string>
     <string name="clear_recipes_string">Clear Recipes</string>
     <string name="difficulty">difficulty</string>
+    <string name="enter_step">Enter step</string>
 
 
 </resources>
